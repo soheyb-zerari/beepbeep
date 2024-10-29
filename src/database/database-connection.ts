@@ -1,0 +1,2 @@
+/* eslint-disable prettier/prettier */
+export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
