@@ -7,7 +7,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 
-export const users = pgTable('restaurant', {
+export const restaurant = pgTable('restaurant', {
   id: serial('id').primaryKey(),
   name: varchar('name'),
   isOpen: boolean(),

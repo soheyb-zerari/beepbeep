@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Pool } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { DATABASE_CONNECTION } from './database-connection';
+import * as restaurantSchema from '../restaurant/schema';
 
 @Module({
   providers: [
@@ -16,7 +17,9 @@ import { DATABASE_CONNECTION } from './database-connection';
         });
 
         return drizzle(pool, {
-          schema: {},
+          schema: {
+            ...restaurantSchema,
+          },
         });
       },
       inject: [ConfigService],
