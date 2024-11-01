@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,4 +16,4 @@ import { RestaurantModule } from './restaurant/restaurant.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

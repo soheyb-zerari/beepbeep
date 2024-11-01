@@ -35,10 +35,9 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 #MIGRATION FILES
-/drizzle
+/prisma/migrations
 
 # ENVIRONMENT VARIABLE
 .env
 .env.*
 
->>>>>>> master
