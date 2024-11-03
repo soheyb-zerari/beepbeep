@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -12,6 +14,8 @@ import { RestaurantModule } from './restaurant/restaurant.module';
     }),
     DatabaseModule,
     RestaurantModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
