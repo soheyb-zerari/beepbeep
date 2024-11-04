@@ -21,4 +21,10 @@ export class UserService {
       where: { username: username },
     });
   }
+
+  findById(id: string) {
+    return this.databaseService.user.findUnique({
+      where: { id: id },
+    })
+  }
 }
