@@ -1,10 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-
 @Injectable()
 export class UserService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   findAll() {
     return this.databaseService.user.findMany();
@@ -27,4 +26,5 @@ export class UserService {
       where: { id: id },
     })
   }
+
 }
