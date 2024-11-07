@@ -11,7 +11,7 @@ import { PassportJwtGuard } from 'src/auth/guards/passport-jwt.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   
-  @Roles(Role.DISPATCHER)
+  @Roles(Role.DISPATCHER, Role.DRIVER)
   @Get()
   httpFindAll() {
     return this.userService.findAll();
