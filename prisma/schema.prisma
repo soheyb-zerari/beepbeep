@@ -26,7 +26,7 @@ model restaurant {
 
 model user {
   id        String   @id @default(cuid())
-  username  String   @unique
+  username  String
   phone     String   @unique
   password  String
   role      Role     @default(CLIENT)
