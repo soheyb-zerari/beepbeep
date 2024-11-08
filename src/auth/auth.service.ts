@@ -30,7 +30,7 @@ export class AuthService {
   async signUp(user: CreateUserDto) {
     const { phone, password } = user;
 
-    const phoneInUse = await this.userService.findByPhone(phone);
+    const phoneInUse = await this.userService.findUserByPhone(phone);
 
     if (phoneInUse) {
       throw new BadRequestException("Phone number already in use")
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   async validateUser(input: AuthInput): Promise<SignInData | null> {
-    const user = await this.userService.findByPhone(input.phone);
+    const user = await this.userService.findUserByPhone(input.phone);
 
     if (user != null) {
       const isValidPassword = await bcrypt.compare(input.password, user.password);
