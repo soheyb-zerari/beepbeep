@@ -14,13 +14,13 @@ export class UserController {
   @Roles(Role.DISPATCHER, Role.DRIVER)
   @Get()
   httpFindAll() {
-    return this.userService.findAll();
+    return this.userService.findUserAll();
   }
   
   @Roles(Role.DISPATCHER)
   @Get(':id')
   httpFindOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findUserOne(id);
   }
 
 }
