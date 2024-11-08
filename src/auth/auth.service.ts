@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from "bcrypt";
@@ -44,11 +44,15 @@ export class AuthService {
   async validateUser(input: AuthInput): Promise<SignInData | null> {
     const user = await this.userService.findByPhone(input.phone);
 
+    if (user === null) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+    
     const isValidPassword = await bcrypt.compare(input.password, user.password);
-    if (user && isValidPassword) {
+    if (isValidPassword) {
       return { userId: user.id, phone: user.phone, role: user.role };
     }
-
-    return null;
+    
+    throw new UnauthorizedException("Invalid credentials");
   }
 }
