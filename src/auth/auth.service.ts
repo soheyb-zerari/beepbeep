@@ -44,13 +44,11 @@ export class AuthService {
   async validateUser(input: AuthInput): Promise<SignInData | null> {
     const user = await this.userService.findByPhone(input.phone);
 
-    if (user === null) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
-    
-    const isValidPassword = await bcrypt.compare(input.password, user.password);
-    if (isValidPassword) {
-      return { userId: user.id, phone: user.phone, role: user.role };
+    if (user != null) {
+      const isValidPassword = await bcrypt.compare(input.password, user.password);
+      if (isValidPassword) {
+        return { userId: user.id, phone: user.phone, role: user.role };
+      }
     }
     
     throw new UnauthorizedException("Invalid credentials");
