@@ -4,6 +4,8 @@ import { DatabaseModule } from './database/database.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { CategoryModule } from './category/category.module';
+import { DriverModule } from './driver/driver.module';
 
 
 @Module({
@@ -16,6 +18,8 @@ import { UserModule } from './user/user.module';
     RestaurantModule,
     AuthModule,
     UserModule,
+    CategoryModule,
+    DriverModule,
   ],
   controllers: [],
   providers: [],

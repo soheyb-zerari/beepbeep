@@ -13,40 +13,83 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model restaurant {
+model Restaurant {
   id        String   @id @default(cuid())
   name      String
   address   String
   isOpen    Boolean
   phone     String
+  ownerId   String   @unique
+  owner     User     @relation(fields: [ownerId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  meal      meal[]
+  meal      Meal[]
+  rate      Float    @default(0)
 }
 
-model user {
+model User {
+  id         String      @id @default(cuid())
+  username   String
+  address    Address?    @relation(fields: [locationId], references: [id])
+  locationId String?
+  phone      String      @unique
+  password   String
+  role       Role        @default(CLIENT)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  restaurant Restaurant?
+  isAvailable Boolean    @default(false)
+}
+
+model Address {
   id        String   @id @default(cuid())
-  username  String   @unique
-  phone     String   @unique
-  password  String
-  role      Role     @default(CLIENT)
+  latitude  Float
+  longitude Float
+  city      String?
+  state     String?
+  country   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  User User[]
 }
 
 enum Role {
   DISPATCHER
   CLIENT
   DRIVER
+  RESTAURANT
 }
 
-model meal {
+model Meal {
   id           String     @id @default(cuid())
   name         String     @unique
   price        Float
   offerPrice   Float
-  restaurant   restaurant @relation(fields: [restaurantId], references: [id])
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   restaurantId String
+  imageUrl     String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  categoryId   String
+  category     Category   @relation(fields: [categoryId], references: [id])
+  variant      Variant[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meal      Meal[]
+}
+
+model Variant {
+  id        String   @id @default(cuid())
+  name      String
+  price     Float
+  meal      Meal     @relation(fields: [mealId], references: [id])
+  mealId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
