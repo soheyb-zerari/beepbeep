@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:17.6
+    env_file: .env
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    # ADD THIS HEALTHCHECK SECTION
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d beepbeep_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    env_file: .env
+    build: .
+    restart: on-failure
+    # UPDATE THE depends_on SECTION
+    depends_on:
+      db:
+        condition: service_healthy # This is the magic line
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    # The command should be set here, not in the Dockerfile, for development
+    command: sh -c "npx prisma db push --accept-data-loss && npm run start:dev"
+
+volumes:
+  db_data:

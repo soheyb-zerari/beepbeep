@@ -1,0 +1,21 @@
+# Ignore dependencies - these should be installed inside the container
+node_modules
+
+dist
+
+# Ignore git history
+.git
+
+# Ignore local environment files
+.env
+
+# Ignore OS and IDE specific files
+.vscode
+.idea
+npm-debug.log
+.DS_Store
+
+# Ignore the Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore
