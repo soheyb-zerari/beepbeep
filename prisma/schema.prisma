@@ -1,31 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model Restaurant {
-  id        String   @id @default(cuid())
-  name      String
-  address   String
-  isOpen    Boolean
-  phone     String
-  ownerId   String   @unique
-  owner     User     @relation(fields: [ownerId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  meal      Meal[]
-  rate      Float    @default(0)
 }
 
 model User {
@@ -36,45 +16,149 @@ model User {
   role       Role        @default(CLIENT)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+
   restaurant Restaurant?
+  driverInfo Driver?
+  
+  // The user's optional, personal "Address Book" for convenience.
+  addresses  Address[]
+
+  orders     Order[]
 }
 
 enum Role {
-  DISPATCHER
   CLIENT
   DRIVER
   RESTAURANT
+  DISPATCHER
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  label      String
+  street     String
+  city       String
+  postalCode String
+  details    String?
+  lat        Float
+  lon        Float
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Driver {
+  id            String    @id @default(cuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String    @unique
+  isAvailable   Boolean   @default(false)
+  vehicleType   String?
+  licensePlate  String?   @unique
+  currentLat    Float?
+  currentLon    Float?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deliveries    Order[]
+}
+
+model Restaurant {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  lattitude Float
+  longitude Float
+  isOpen    Boolean?  @default(false)
+  phone     String
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meals     Meal[]
+  rate      Float    @default(0)
 }
 
 model Meal {
-  id           String     @id @default(cuid())
-  name         String     @unique
+  id           String      @id @default(cuid())
+  name         String
+  description  String?
   price        Float
-  offerPrice   Float
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  imageUrl     String?
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   restaurantId String
-  imageUrl     String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  category     Category    @relation(fields: [categoryId], references: [id])
   categoryId   String
-  category     Category   @relation(fields: [categoryId], references: [id])
-  variant      Variant[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  variants     Variant[]
+  orderItems   OrderItem[]
 }
 
 model Category {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  meal      Meal[]
+  meals     Meal[]
 }
 
 model Variant {
   id        String   @id @default(cuid())
   name      String
+  option    String
   price     Float
-  meal      Meal     @relation(fields: [mealId], references: [id])
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  
+  mealCost       Float
+  deliveryFee    Float
+  totalPrice     Float
+  // is the driver paid 30% for this order?
+  isSettled      Boolean     @default(false)
+  status         OrderStatus @default(PENDING)
+  
+  deliveryAddress String
+  deliveryLat     Float
+  deliveryLon     Float
+  
+  client         User        @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  clientId       String
+  
+  driver         Driver?     @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  driverId       String?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  items          OrderItem[]
+
+  @@index([driverId, isSettled])
+}
+
+model OrderItem {
+  id               String   @id @default(cuid())
+  quantity         Int
+  priceAtPurchase  Float
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId          String
+  meal             Meal     @relation(fields: [mealId], references: [id], onDelete: Restrict)
+  mealId           String
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED_BY_RESTAURANT
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
 }

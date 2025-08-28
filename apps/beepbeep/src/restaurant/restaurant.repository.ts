@@ -1,19 +1,27 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
-import { RestaurantRepository } from './restaurant.repository';
+import { DatabaseService } from '../../../../libs/database/src/database.service';
 import { Prisma, Restaurant } from '@prisma/client';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Injectable()
-export class RestaurantService {
-  constructor(private restaurantRepository: RestaurantRepository) { }
+export class RestaurantRepository {
+  constructor(private databaseService: DatabaseService) { }
 
-  async create(data: CreateRestaurantDto): Promise<Restaurant> {
-    return await this.restaurantRepository.createDB(data);
+  createDB(data: CreateRestaurantDto): Promise<Restaurant> {
+    const { ownerId, ...rest } = data;
+    return this.databaseService.restaurant.create({
+      data: {
+        ...rest,
+        owner: {
+          connect: { id: ownerId }
+        }
+      }
+    });
   }
   
-  findAll(params: {
+  async findAllDB(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.RestaurantWhereUniqueInput;
@@ -21,7 +29,7 @@ export class RestaurantService {
     orderBy?: Prisma.RestaurantOrderByWithRelationInput;
   }): Promise<Restaurant[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.restaurantRepository.findAllDB({
+    return await this.databaseService.restaurant.findMany({
       skip,
       take,
       cursor,
@@ -30,16 +38,16 @@ export class RestaurantService {
     });
   }
 
-  findOne(id: number) {
+  findOneDB(id: number) {
     return `This action returns a #${id} restaurant`;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  update(id: number, updateRestaurantDto: UpdateRestaurantDto) {
+  updateDB(id: number, updateRestaurantDto: UpdateRestaurantDto) {
     return `This action updates a #${id} restaurant`;
   }
 
-  remove(id: number) {
+  removeDB(id: number) {
     return `This action removes a #${id} restaurant`;
   }
 
