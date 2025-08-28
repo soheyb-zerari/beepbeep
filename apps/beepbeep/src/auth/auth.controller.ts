@@ -10,13 +10,13 @@ export class AuthController {
 
     @Post("login")
     @UseGuards(PassportLocalGuard)
-    login(@Request() request) {
-        return this.authService.signIn(request.user);
+    async login(@Request() request) {
+        return await this.authService.signIn(request.user);
     }
     
     @Post("register")
-    signUp(@Body() createUserDto: CreateUserDto) {
-        return this.authService.signUp(createUserDto);
+    async signUp(@Body() createUserDto: CreateUserDto) {
+        return await this.authService.signUp(createUserDto);
     }
 
 }
