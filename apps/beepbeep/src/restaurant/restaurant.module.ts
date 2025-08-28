@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { RestaurantController } from './restaurant.controller';
-import { DatabaseModule } from 'src/database/database.module';
+import { DatabaseModule } from '../../../../libs/database/src/database.module';
 
 @Module({
   imports: [DatabaseModule],

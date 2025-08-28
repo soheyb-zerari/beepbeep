@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import * as bcrypt from "bcrypt";
-import { CreateUserDto } from 'src/user/dtos/createUser.dto';
+import { CreateUserDto } from '../user/dtos/createUser.dto';
 import { Role } from '@prisma/client';
 
 type AuthInput = { phone: string, password: string }

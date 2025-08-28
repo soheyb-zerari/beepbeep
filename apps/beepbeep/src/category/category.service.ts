@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Category, Prisma } from '@prisma/client';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../../../../libs/database/src/database.service';
 
 @Injectable()
 export class CategoryService {
