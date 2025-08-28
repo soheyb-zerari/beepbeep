@@ -15,8 +15,8 @@ export class RestaurantController {
   }
 
   @Get()
-  httpFindAll() {
-    return this.restaurantService.findAll({});
+  async httpFindAll() {
+    return await this.restaurantService.findAll({});
   }
 
   @Get(':id')
