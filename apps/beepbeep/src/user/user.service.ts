@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../../../../libs/database/src/database.service';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { Role } from '@prisma/client';
 

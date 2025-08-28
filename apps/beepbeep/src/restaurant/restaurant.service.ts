@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../../../../libs/database/src/database.service';
 import { Prisma, Restaurant } from '@prisma/client';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
