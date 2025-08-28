@@ -10,8 +10,8 @@ export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) { }
 
   @Post()
-  httpCreate(@Body() createRestaurantDto: CreateRestaurantDto) {
-    return this.restaurantService.create(createRestaurantDto);
+  async httpCreate(@Body() createRestaurantDto: CreateRestaurantDto) {
+      return await this.restaurantService.create(createRestaurantDto);
   }
 
   @Get()
