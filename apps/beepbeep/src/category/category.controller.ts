@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from '@prisma/client';
@@ -8,27 +9,27 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @Post()
-  httpCreate(@Body() data: { name: string }) {
-    return this.categoryService.create(data);
+  async httpCreate(@Body() data: { name: string }) {
+    return await this.categoryService.create(data);
   }
 
   @Get()
-  httpFindAll(): Promise<Category[]> {
-    return this.categoryService.findAll({});
+  async httpFindAll(): Promise<Category[]> {
+    return await this.categoryService.findAll({});
   }
 
   @Get(':id')
-  httpFindOne(@Param('id') id: string): Promise<Category | null> {
-    return this.categoryService.findOne(id);
+  async httpFindOne(@Param('id') id: string): Promise<Category | null> {
+    return await this.categoryService.findOne(id);
   }
 
   @Patch(':id')
-  httpUpdate(@Param('id') id: string, @Body() data: { name: string }) {
-    return this.categoryService.update(id, data);
+  async httpUpdate(@Param('id') id: string, @Body() data: { name: string }) {
+    return await this.categoryService.update(id, data);
   }
 
   @Delete(':id')
-  httpRemove(@Param('id') id: string) {
-    return this.categoryService.remove(id);
+  async httpRemove(@Param('id') id: string) {
+    return await this.categoryService.remove(id);
   }
 }

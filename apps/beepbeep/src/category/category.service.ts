@@ -1,18 +1,17 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Category, Prisma } from '@prisma/client';
-import { DatabaseService } from '../../../../libs/database/src/database.service';
+import { CategoryRepository } from './category.repository';
 
 @Injectable()
 export class CategoryService {
-  constructor(private databaseService: DatabaseService) { }
-  create(data: Prisma.CategoryCreateInput): Promise<Category> {
-    return this.databaseService.category.create({
-      data
-    });
+  constructor(private categoryRepository: CategoryRepository) { }
+
+  async create(data: Prisma.CategoryCreateInput): Promise<Category> {
+    return await this.categoryRepository.createDB(data);
   }
 
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.CategoryWhereUniqueInput;
@@ -20,7 +19,7 @@ export class CategoryService {
     orderBy?: Prisma.CategoryOrderByWithRelationInput;
   }): Promise<Category[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.databaseService.category.findMany({
+    return await this.categoryRepository.findAllDB({
       skip,
       take,
       cursor,
@@ -29,36 +28,23 @@ export class CategoryService {
     });
   }
 
-  findOne(id: string): Promise<Category | null> {
-    return this.databaseService.category.findUnique({
-      where: { id: id },
-    });
+  async findOne(id: string): Promise<Category | null> {
+    return await this.categoryRepository.findOneDB(id);
   }
 
-  async update(id: string, data: Prisma.CategoryUpdateInput) {
-    const category = await this.databaseService.category.findUnique({
-      where: { id },
-    });
-    if (!category) {
-      return `Category with ID ${id} not found`;
+  async update(id: string, data: Prisma.CategoryUpdateInput): Promise<Category> {
+    const categoryDB = await this.categoryRepository.findUniqueDb(id);
+    if (!categoryDB) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
-    return this.databaseService.category.update({
-      where: { id: id },
-      data,
-    });
+    return await this.categoryRepository.updateDB(id, data);
   }
 
-  async remove(id: string) {
-    const category = await this.databaseService.category.findUnique({
-      where: { id },
-    });
-
-    if (!category) {
-      return `Category with ID ${id} not found`;
+  async remove(id: string): Promise<Category> {
+    const categoryDB = await this.categoryRepository.findUniqueDb(id);
+    if (!categoryDB) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
-
-    return this.databaseService.category.delete({
-      where: { id },
-    });
+    return await this.categoryRepository.removeDB(id);
   }
 }
