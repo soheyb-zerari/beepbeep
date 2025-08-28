@@ -1,19 +1,26 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { RestaurantRepository } from './restaurant.repository';
 import { Prisma, Restaurant } from '@prisma/client';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class RestaurantService {
-  constructor(private restaurantRepository: RestaurantRepository) { }
+  constructor(
+    private restaurantRepository: RestaurantRepository,
+    private userService: UserService
+  ) { }
 
   async create(data: CreateRestaurantDto): Promise<Restaurant> {
+    const { ownerId } = data;
+    const owner = await this.userService.findUserById(ownerId);
+    if (!owner) throw new BadRequestException('Invalid Data');
     return await this.restaurantRepository.createDB(data);
   }
   
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.RestaurantWhereUniqueInput;
@@ -21,7 +28,7 @@ export class RestaurantService {
     orderBy?: Prisma.RestaurantOrderByWithRelationInput;
   }): Promise<Restaurant[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.restaurantRepository.findAllDB({
+    return await this.restaurantRepository.findAllDB({
       skip,
       take,
       cursor,

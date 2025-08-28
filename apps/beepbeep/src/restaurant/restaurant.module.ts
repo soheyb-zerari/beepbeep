@@ -4,9 +4,10 @@ import { RestaurantService } from './restaurant.service';
 import { RestaurantController } from './restaurant.controller';
 import { DatabaseModule } from '../../../../libs/database/src/database.module';
 import { RestaurantRepository } from './restaurant.repository';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UserModule],
   controllers: [RestaurantController],
   providers: [RestaurantService, RestaurantRepository],
 })

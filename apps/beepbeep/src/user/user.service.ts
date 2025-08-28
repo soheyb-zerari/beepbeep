@@ -1,52 +1,38 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../../../libs/database/src/database.service';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { Role } from '@prisma/client';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly databaseService: DatabaseService) { }
+  constructor(private readonly userRepository: UserRepository) { }
 
-  findUserAll() {
-    return this.databaseService.user.findMany();
+  async findUserAll() {
+    return await this.userRepository.findUserAllDB();
   }
 
-  findUserOne(id: string) {
-    return this.databaseService.user.findUnique({
-      where: { id: id },
-    });
+  async findUserOne(id: string) {
+    return await this.userRepository.findUserOneDB(id);
   }
 
-  findUserByUsername(username: string) {
-    return this.databaseService.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
+  async findUserByUsername(username: string) {
+    return await this.userRepository.findUserByUsernameDB(username);
   }
 
-  findUserByPhone(phoneNumber: string) {
-    return this.databaseService.user.findUnique({
-      where: { phone: phoneNumber },
-    });
+  async findUserByPhone(phoneNumber: string) {
+    return await this.userRepository.findUserByPhoneDB(phoneNumber);
   }
 
-  findUsersByRole(role: Role) {
-    return this.databaseService.user.findMany({
-      where: { role: role }
-    })
+  async findUsersByRole(role: Role) {
+    return await this.userRepository.findUsersByRoleDB(role)
   }
 
-  findUserById(id: string) {
-    return this.databaseService.user.findUnique({
-      where: { id: id },
-    })
+  async findUserById(id: string) {
+    return await this.userRepository.findUserByIdDB(id)
   }
 
-  createUser(createUserDto: CreateUserDto) {
-    return this.databaseService.user.create({
-      data: createUserDto
-    });
+  async createUser(createUserDto: CreateUserDto) {
+    return await this.userRepository.createUserDB(createUserDto);
   }
 }

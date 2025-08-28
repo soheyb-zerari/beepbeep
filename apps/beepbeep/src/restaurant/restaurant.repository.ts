@@ -9,9 +9,9 @@ import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 export class RestaurantRepository {
   constructor(private databaseService: DatabaseService) { }
 
-  createDB(data: CreateRestaurantDto): Promise<Restaurant> {
+  async createDB(data: CreateRestaurantDto): Promise<Restaurant> {
     const { ownerId, ...rest } = data;
-    return this.databaseService.restaurant.create({
+    return await this.databaseService.restaurant.create({
       data: {
         ...rest,
         owner: {
